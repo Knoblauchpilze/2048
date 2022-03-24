@@ -114,6 +114,15 @@ namespace pge {
       drawRect(const SpriteDesc& t,
                const CoordinateFrame& cf);
 
+      void
+      drawBoard(const RenderDesc& res) noexcept;
+
+      void
+      drawNumbers(const RenderDesc& res) noexcept;
+
+      void
+      drawOverlays(const RenderDesc& res) noexcept;
+
     private:
 
       /**
@@ -139,6 +148,11 @@ namespace pge {
        *          the elements of the game.
        */
       TexturePackShPtr m_packs;
+
+      /**
+       * @brief - The 2048 board.
+       */
+      two48::GameShPtr m_board;
   };
 
 }
