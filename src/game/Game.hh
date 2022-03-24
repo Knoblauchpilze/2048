@@ -4,6 +4,7 @@
 # include <vector>
 # include <memory>
 # include <core_utils/CoreObject.hh>
+# include "2048.hh"
 
 namespace pge {
 
@@ -17,8 +18,9 @@ namespace pge {
 
       /**
        * @brief - Create a new game with default parameters.
+       * @param board - the board managed by this game.
        */
-      Game();
+      Game(two48::GameShPtr board);
 
       ~Game();
 
@@ -167,6 +169,11 @@ namespace pge {
        *          current state of the simulation.
        */
       Menus m_menus;
+
+      /**
+       * @brief - The board managed by this game.
+       */
+      two48::GameShPtr m_board;
   };
 
   using GameShPtr = std::shared_ptr<Game>;

@@ -5,7 +5,7 @@
 
 namespace pge {
 
-  Game::Game():
+  Game::Game(two48::GameShPtr board):
     utils::CoreObject("game"),
 
     m_state(
@@ -16,7 +16,9 @@ namespace pge {
       }
     ),
 
-    m_menus()
+    m_menus(),
+
+    m_board(board)
   {
     setService("game");
   }
