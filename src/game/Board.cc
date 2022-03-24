@@ -39,7 +39,7 @@ namespace two48 {
       unsigned x = std::rand() % w();
       unsigned y = std::rand() % h();
 
-      unsigned p = std::rand() % 11u;
+      unsigned p = 1u + std::rand() % 11u;
 
       m_board[linear(x, y)] = std::pow(2u, p);
 
@@ -81,6 +81,30 @@ namespace two48 {
   Board::moveVertically(bool positive) {
     warn(std::string("Moving towards ") + (positive ? "up" : "down"));
     return 0u;
+  }
+
+  bool
+  Board::spawn(unsigned value) noexcept {
+    // Gather available cells.
+    std::vector<unsigned> availables;
+
+    for (unsigned id = 0u ; id < m_board.size() ; ++id) {
+      if (m_board[id] == 0u) {
+        availables.push_back(id);
+      }
+    }
+
+    if (availables.empty()) {
+      return false;
+    }
+
+    // Pick a random location and spawn the number.
+    unsigned id = availables[std::rand() % availables.size()];
+    m_board[id] = value;
+
+    log("Spawning " + std::to_string(value) + " at " + std::to_string(id % w()) + "x" + std::to_string(id / w()));
+
+    return true;
   }
 
   inline

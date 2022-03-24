@@ -73,6 +73,15 @@ namespace two48 {
       unsigned
       moveVertically(bool positive);
 
+      /**
+       * @brief - Pop a tile with the input value at a random empty
+       *          location in the grid.
+       * @param value - the valeu to spawn.
+       * @return - `true` in case the tile could be spawned.
+       */
+      bool
+      spawn(unsigned value) noexcept;
+
     private:
 
       unsigned
