@@ -3,6 +3,39 @@
 # include <cxxabi.h>
 # include "Menu.hh"
 
+/// @brief - The height of the main menu.
+# define STATUS_MENU_HEIGHT 50
+
+namespace {
+
+  pge::MenuShPtr
+  generateMenu(const olc::vi2d& pos,
+               const olc::vi2d& size,
+               const std::string& text,
+               const std::string& name,
+               const olc::Pixel& color,
+               bool clickable = false,
+               bool selectable = false)
+  {
+    pge::menu::MenuContentDesc fd = pge::menu::newMenuContent(text, "", size);
+    fd.color = olc::WHITE;
+    fd.hColor = olc::GREY;
+    fd.align = pge::menu::Alignment::Center;
+
+    return std::make_shared<pge::Menu>(
+      pos,
+      size,
+      name,
+      pge::menu::newColoredBackground(color),
+      fd,
+      pge::menu::Layout::Horizontal,
+      clickable,
+      selectable
+    );
+  }
+
+}
+
 namespace pge {
 
   Game::Game(two48::GameShPtr board):
@@ -18,7 +51,9 @@ namespace pge {
 
     m_menus(),
 
-    m_board(board)
+    m_board(board),
+    m_moves(0u),
+    m_score(0u)
   {
     setService("game");
   }
@@ -26,11 +61,41 @@ namespace pge {
   Game::~Game() {}
 
   std::vector<MenuShPtr>
-  Game::generateMenus(float /*width*/,
+  Game::generateMenus(float width,
                       float /*height*/)
   {
-    log("Generate UI menus here", utils::Level::Info);
-    return std::vector<MenuShPtr>();
+    olc::Pixel bg(250, 248, 239);
+    olc::Pixel buttonBG(185, 172, 159);
+
+    // Generate the status menu.
+    MenuShPtr status = generateMenu(olc::vi2d(), olc::vi2d(width, STATUS_MENU_HEIGHT), "", "status", bg);
+
+    olc::vi2d pos;
+    olc::vi2d dims(50, STATUS_MENU_HEIGHT);
+    MenuShPtr mLabel = generateMenu(pos, dims, "Moves:", "moves_label", buttonBG);
+    m_menus.moves = generateMenu(pos, dims, "0", "moves", buttonBG);
+    MenuShPtr sLabel = generateMenu(pos, dims, "Score:", "score_label", buttonBG);
+    m_menus.score = generateMenu(pos, dims, "0", "score", buttonBG);
+    MenuShPtr reset = generateMenu(pos, dims, "Reset", "reset", buttonBG, true);
+
+    reset->setSimpleAction(
+      [](Game& g) {
+        g.reset();
+      }
+    );
+
+    status->addMenu(mLabel);
+    status->addMenu(m_menus.moves);
+    status->addMenu(sLabel);
+    status->addMenu(m_menus.score);
+    status->addMenu(reset);
+
+    // Package menus for output.
+    std::vector<MenuShPtr> menus;
+
+    menus.push_back(status);
+
+    return menus;
   }
 
   void
@@ -48,8 +113,6 @@ namespace pge {
     if (m_state.paused) {
       return true;
     }
-
-    log("Perform step method of the game", utils::Level::Info);
 
     updateUI();
 
@@ -69,6 +132,52 @@ namespace pge {
   }
 
   void
+  Game::move(int x, int y) {
+    // Do nothing while the game is paused.
+    if (m_state.paused) {
+      return;
+    }
+
+    // Ignore invalid motions.
+    if (x != 0 && y != 0) {
+      warn(
+        "Ignoring invalid motion",
+        "Direction is " + std::to_string(x) + "x" + std::to_string(y)
+      );
+
+      return;
+    }
+
+    unsigned score = 0u;
+
+    if (x != 0) {
+      score = m_board->moveHorizontally(x > 0);
+    }
+
+    if (y != 0) {
+      score = m_board->moveVertically(y > 0);
+    }
+
+    // Update the moves and score.
+    log("Move " + std::to_string(m_moves) + " brought " + std::to_string(score) + " point(s)");
+    ++m_moves;
+    m_score += score;
+  }
+
+  void
+  Game::reset() {
+    // Do nothing while the game is paused.
+    if (m_state.paused) {
+      return;
+    }
+
+    // Reset variables.
+    m_moves = 0u;
+    m_score = 0u;
+    m_board->initialize();
+  }
+
+  void
   Game::enable(bool enable) {
     m_state.disabled = !enable;
 
@@ -82,7 +191,9 @@ namespace pge {
 
   void
   Game::updateUI() {
-    log("Perform update of UI menus", utils::Level::Info);
+    // Update moves and score.
+    m_menus.moves->setText(std::to_string(m_moves));
+    m_menus.score->setText(std::to_string(m_score));
   }
 
 }

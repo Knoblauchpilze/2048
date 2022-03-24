@@ -110,6 +110,22 @@ namespace pge {
       void
       resume();
 
+      /**
+       * @brief - Perform a move of the piece of the board in the
+       *          specified direction. We will consider that only
+       *          one of the coordinates should be not null.
+       * @param x - the motion along the x coordinate.
+       * @param y - the motion along the y coordinate.
+       */
+      void
+      move(int x, int y);
+
+      /**
+       * @brief - Reset the game to a new one.
+       */
+      void
+      reset();
+
     private:
 
       /**
@@ -157,6 +173,11 @@ namespace pge {
       /// @brief - Convenience structure allowing to regroup
       /// all info about the menu in a single struct.
       struct Menus {
+        // The menu holding the number of moves.
+        MenuShPtr moves;
+
+        // The menu holding the score.
+        MenuShPtr score;
       };
 
       /**
@@ -174,6 +195,16 @@ namespace pge {
        * @brief - The board managed by this game.
        */
       two48::GameShPtr m_board;
+
+      /**
+       * @brief - The number of moves played by the user.
+       */
+      unsigned m_moves;
+
+      /**
+       * @brief - The current score of the player.
+       */
+      unsigned m_score;
   };
 
   using GameShPtr = std::shared_ptr<Game>;
