@@ -21,6 +21,8 @@ namespace pge {
         Space,
 
         P,
+        N,
+        R,
 
         KeysCount
       };

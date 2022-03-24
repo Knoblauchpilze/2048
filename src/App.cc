@@ -139,6 +139,9 @@ namespace pge {
     if (c.keys[controls::keys::P]) {
       m_game->togglePause();
     }
+    if (c.keys[controls::keys::N] || c.keys[controls::keys::R]) {
+      m_game->reset();
+    }
   }
 
   void
@@ -305,8 +308,8 @@ namespace pge {
     const two48::Board& b = (*m_board)();
 
     // Draw the board.
-    for (int y = 0 ; y < b.h() ; ++y) {
-      for (int x = 0 ; x < b.w() ; ++x) {
+    for (unsigned y = 0u ; y < b.h() ; ++y) {
+      for (unsigned x = 0u ; x < b.w() ; ++x) {
         sd.x = x;
         sd.y = y;
 
@@ -325,8 +328,8 @@ namespace pge {
     olc::vf2d scale(2.0f, 2.0f);
 
     // Draw the numbers.
-    for (int y = 0 ; y < b.h() ; ++y) {
-      for (int x = 0 ; x < b.w() ; ++x) {
+    for (unsigned y = 0u ; y < b.h() ; ++y) {
+      for (unsigned x = 0u ; x < b.w() ; ++x) {
         if (b.empty(x, y)) {
           continue;
         }
@@ -361,9 +364,12 @@ namespace pge {
     // a cell with a piece.
     olc::vi2d mp = GetMousePos();
     olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp, nullptr);
-    if (mtp.x >= 0 && mtp.x < b.w() && mtp.y >= 0 && mtp.y < b.h()) {
-      unsigned x = std::clamp(mtp.x, 0, b.w());
-      unsigned y = std::clamp(mtp.y, 0, b.h());
+
+    bool validX = (mtp.x >= 0 && static_cast<unsigned>(mtp.x) < b.w());
+    bool validY = (mtp.y >= 0 && static_cast<unsigned>(mtp.y) < b.h());
+    if (validX && validY) {
+      unsigned x = std::clamp(static_cast<unsigned>(mtp.x), 0u, b.w());
+      unsigned y = std::clamp(static_cast<unsigned>(mtp.y), 0u, b.h());
 
       sd.x = 1.0f * x;
       sd.y = 1.0f * y;

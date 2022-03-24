@@ -3,7 +3,7 @@
 
 namespace two48 {
 
-  Game::Game(int width, int height) noexcept:
+  Game::Game(unsigned width, unsigned height) noexcept:
     utils::CoreObject("board"),
 
     m_board(width, height)
@@ -20,7 +20,19 @@ namespace two48 {
 
   void
   Game::initialize() noexcept {
-    m_board.initialize();
+    // We want two initial tiles with a value of 2 or 4.
+    // There's a strong bias towards 2 instead of 4.
+    const unsigned count = 2u;
+    unsigned id = 0u;
+
+    m_board.reset();
+
+    while (id < count) {
+      unsigned v = std::rand() % 100u < 90u ? 2u : 4u;
+      m_board.spawn(v);
+
+      ++id;
+    }
   }
 
   unsigned
@@ -31,7 +43,6 @@ namespace two48 {
     // Spawn a random tile: the value is set between
     // 2 and 4 with a strong bias towards 2.
     unsigned v = std::rand() % 100u < 90u ? 2u : 4u;
-
     m_board.spawn(v);
 
     return s;
@@ -39,7 +50,15 @@ namespace two48 {
 
   unsigned
   Game::moveVertically(bool positive) {
-    return m_board.moveVertically(positive);
+    // Handle the move.
+    unsigned s = m_board.moveVertically(positive);
+
+    // Spawn a random tile: the value is set between
+    // 2 and 4 with a strong bias towards 2.
+    unsigned v = std::rand() % 100u < 90u ? 2u : 4u;
+    m_board.spawn(v);
+
+    return s;
   }
 
 }

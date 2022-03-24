@@ -159,7 +159,7 @@ namespace pge {
     }
 
     // Update the moves and score.
-    log("Move " + std::to_string(m_moves) + " brought " + std::to_string(score) + " point(s)");
+    log("Move " + std::to_string(m_moves) + " brought " + std::to_string(score) + " point(s)", utils::Level::Verbose);
     ++m_moves;
     m_score += score;
   }
