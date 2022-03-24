@@ -5,6 +5,12 @@
 /// @brief - The border to have between cells.
 # define CELL_BORDER 0.1f
 
+/// @brief - The width of the board in cells.
+# define BOARD_WIDTH 3
+
+/// @brief - The height of the board in cells.
+# define BOARD_HEIGHT 5
+
 namespace {
 
   olc::Pixel
@@ -52,6 +58,19 @@ namespace {
     return (number < 4u ? olc::Pixel(101, 95, 83) : olc::WHITE);
   }
 
+  olc::vf2d
+  cellToCoords(float x, float y, unsigned w, unsigned h) noexcept {
+    return olc::vf2d(4.0f - w / 2.0f + x, 4.0f - h / 2.0f + y);
+  }
+
+  olc::vf2d
+  coordsToCell(float x, float y, unsigned w, unsigned h) noexcept{
+    return olc::vf2d(
+      std::floor(x - 3.5f + w / 2.0f),
+      std::floor(y - 3.5f + h / 2.0f)
+    );
+  }
+
 }
 
 namespace pge {
@@ -66,7 +85,7 @@ namespace pge {
     m_packs(std::make_shared<TexturePack>()),
 
     m_directionalState(Direction::Count, false),
-    m_board(std::make_shared<two48::Game>(8, 8))
+    m_board(std::make_shared<two48::Game>(BOARD_WIDTH, BOARD_HEIGHT))
   {}
 
   bool
@@ -310,8 +329,9 @@ namespace pge {
     // Draw the board.
     for (unsigned y = 0u ; y < b.h() ; ++y) {
       for (unsigned x = 0u ; x < b.w() ; ++x) {
-        sd.x = x;
-        sd.y = y;
+        olc::vf2d p = cellToCoords(x, y, b.w(), b.h());
+        sd.x = p.x;
+        sd.y = p.y;
 
         sd.sprite.tint = b.empty(x, y) ? empty : backgroundFromNumber(b.at(x, y));
 
@@ -337,10 +357,9 @@ namespace pge {
         unsigned val = b.at(x, y);
         std::string str = std::to_string(val);
 
-        float px = x + 0.5f;
-        float py = y + 0.5f;
+        olc::vf2d p = cellToCoords(x + 0.5f, y + 0.5f, b.w(), b.h());
 
-        olc::vf2d pNum = res.cf.tileCoordsToPixels(px, py, pge::RelativePosition::Center, 1.0f);
+        olc::vf2d pNum = res.cf.tileCoordsToPixels(p.x, p.y, pge::RelativePosition::Center, 1.0f);
 
         // More or less center the text in the cell.
         olc::vi2d sz = GetTextSize(str);
@@ -363,16 +382,18 @@ namespace pge {
     // Draw the overlay in case the mouse is over
     // a cell with a piece.
     olc::vi2d mp = GetMousePos();
-    olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp, nullptr);
+    olc::vf2d it;
+    olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp, &it);
 
-    bool validX = (mtp.x >= 0 && static_cast<unsigned>(mtp.x) < b.w());
-    bool validY = (mtp.y >= 0 && static_cast<unsigned>(mtp.y) < b.h());
+    // Convert raw cells to coordinates.
+    olc::vf2d cp = coordsToCell(mtp.x + it.x, mtp.y + it.y, b.w(), b.h());
+
+    bool validX = (cp.x >= 0 && static_cast<unsigned>(cp.x) < b.w());
+    bool validY = (cp.y >= 0 && static_cast<unsigned>(cp.y) < b.h());
     if (validX && validY) {
-      unsigned x = std::clamp(static_cast<unsigned>(mtp.x), 0u, b.w());
-      unsigned y = std::clamp(static_cast<unsigned>(mtp.y), 0u, b.h());
-
-      sd.x = 1.0f * x;
-      sd.y = 1.0f * y;
+      olc::vf2d p = cellToCoords(cp.x, cp.y, b.w(), b.h());
+      sd.x = p.x;
+      sd.y = p.y;
 
       sd.sprite.tint = olc::Pixel(101, 95, 89, pge::alpha::AlmostTransparent);
       drawRect(sd, res.cf);
