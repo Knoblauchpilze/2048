@@ -1,6 +1,7 @@
 
 /**
- * @brief - A clone of the 2048 board game.
+ * @brief - A clone of the 2048 board game. See more info here:
+ *          https://github.com/gabrielecirulli/2048
  */
 
 # include <core_utils/StdLogger.hh>

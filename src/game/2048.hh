@@ -12,7 +12,7 @@ namespace two48 {
   class Game: public utils::CoreObject {
     public:
 
-      Game(int width = 4u, int height = 4u) noexcept;
+      Game(unsigned width = 4u, unsigned height = 4u) noexcept;
 
       /**
        * @brief - Decay the game into its board component.

@@ -11,27 +11,21 @@ namespace two48 {
     public:
 
       explicit
-      Board(int width = 4u, int height = 4u) noexcept;
+      Board(unsigned width = 4u, unsigned height = 4u) noexcept;
 
       /**
        * @brief - The width of the board.
        * @return - the width of the board.
        */
-      int
+      unsigned
       w() const noexcept;
 
       /**
        * @brief - The height of the board.
        * @return - the height of the board.
        */
-      int
+      unsigned
       h() const noexcept;
-
-      /**
-       * @brief - Initialize the board with a new game.
-       */
-      void
-      initialize() noexcept;
 
       /**
        * @brief - Whether or not the position at the specified coords
@@ -41,7 +35,7 @@ namespace two48 {
        * @return - `true` if the cell is empty.
        */
       bool
-      empty(int x, int y) const;
+      empty(unsigned x, unsigned y) const;
 
       /**
        * @brief - Returns the number at the specified position or zero
@@ -51,7 +45,7 @@ namespace two48 {
        * @return - the number at this place.
        */
       unsigned
-      at(int x, int y) const;
+      at(unsigned x, unsigned y) const;
 
       /**
        * @brief - Move the pieces in the board with a horizontal move
@@ -74,6 +68,12 @@ namespace two48 {
       moveVertically(bool positive);
 
       /**
+       * @brief - Reset all tiles to be 0.
+       */
+      void
+      reset() noexcept;
+
+      /**
        * @brief - Pop a tile with the input value at a random empty
        *          location in the grid.
        * @param value - the valeu to spawn.
@@ -85,19 +85,39 @@ namespace two48 {
     private:
 
       unsigned
-      linear(int x, int y) const noexcept;
+      linear(unsigned x, unsigned y) const noexcept;
+
+      /**
+       * @brief - Move row horizontally in the specified direction.
+       * @param y - the index of the row to process.
+       * @param positive - whether the row should be collapsed towards
+       *                   positive x or not.
+       * @return - how much points the collapse brought.
+       */
+      unsigned
+      collapseRow(unsigned y, bool positive) noexcept;
+
+      /**
+       * @brief - Move column horizontally in the specified direction.
+       * @param x - the index of the row to process.
+       * @param positive - whether the row should be collapsed towards
+       *                   positive y or not.
+       * @return - how much points the collapse brought.
+       */
+      unsigned
+      collapseColumn(unsigned x, bool positive) noexcept;
 
     private:
 
       /**
        * @brief - The width of the board.
        */
-      int m_width;
+      unsigned m_width;
 
       /**
        * @brief - The height of the board.
        */
-      int m_height;
+      unsigned m_height;
 
       /**
        * @brief - The current state of the board.
