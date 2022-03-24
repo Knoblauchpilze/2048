@@ -8,13 +8,10 @@
 namespace pge {
   namespace sprites {
 
-    /**
-     * @brief - Convenience structure allowing to represent the
-     *          sprites inside a file. In addition to the name
-     *          of the file the layout of the sprites is also
-     *          specified so as to be able to identify tiles in
-     *          a correct way.
-     */
+    /// @brief Convenience structure allowing to represent the sprites
+    /// inside a file. In addition to the name of the file the layout
+    /// of the sprites is also specified so as to be able to identify
+    /// tiles in a correct way.
     struct Pack {
       // The `file` defines the path to the file defining the
       // textures. It should be a valid path.
@@ -31,10 +28,8 @@ namespace pge {
       olc::vi2d layout;
     };
 
-    /**
-     * @brief - Convenience structure regrouping needed props
-     *          to draw a sprite.
-     */
+    /// @brief - Convenience structure regrouping needed props to draw
+    /// a sprite.
     struct Sprite {
       // The `pack` defines the identifier of the pack from
       // which the sprite should be picked.
@@ -120,12 +115,10 @@ namespace pge {
 
     private:
 
-      /**
-       * @brief - Convenience structure referencing the needed
-       *          information to describe a texture pack.
-       *          Unlike the public interface this contains the
-       *          values used internally to define the pack.
-       */
+      /// @brief - Convenience structure referencing the needed
+      /// information to describe a texture pack. Unlike the
+      /// public interface this contains the values used internally
+      /// to define the pack.
       struct Pack {
         // The `sSize` defines the size of an individual sprite
         // in the pack.

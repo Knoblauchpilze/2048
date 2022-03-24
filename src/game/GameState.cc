@@ -71,6 +71,7 @@ namespace pge {
 
     m_home(nullptr),
     m_loadGame(nullptr),
+    m_savedGames(10u, "data/saves", "ext"),
     m_gameOver(nullptr)
   {
     setService("chess");
@@ -82,6 +83,13 @@ namespace pge {
     // Assign the screen, which will handle the visibility
     // update.
     setScreen(screen);
+
+    // Connect the slot to receive updates about saved games.
+    m_savedGames.onSavedGameSelected.connect_member<GameState>(this, &GameState::onSavedGamePicked);
+  }
+
+  GameState::~GameState() {
+    m_savedGames.onSavedGameSelected.disconnectAll();
   }
 
   Screen
@@ -134,6 +142,12 @@ namespace pge {
   }
 
   void
+  GameState::onSavedGamePicked(const std::string& game) {
+    log("Picked saved game \"" + game + "\"", utils::Level::Info);
+    setScreen(Screen::Game);
+  }
+
+  void
   GameState::generateHomeScreen(const olc::vi2d& dims) {
     // Generate the main screen.
     m_home = generateDefaultScreen(dims, olc::DARK_PINK);
@@ -150,6 +164,8 @@ namespace pge {
     m = generateScreenOption(dims, "Load game", olc::VERY_DARK_PINK, "load_game", true);
     m->setSimpleAction(
       [this](Game& /*g*/) {
+        // Refresh the saved games list.
+        m_savedGames.refresh();
         setScreen(Screen::LoadGame);
       }
     );
@@ -181,6 +197,9 @@ namespace pge {
       }
     );
     m_loadGame->addMenu(m);
+
+    m_savedGames.generate(m_loadGame);
+    m_savedGames.refresh();
   }
 
   void

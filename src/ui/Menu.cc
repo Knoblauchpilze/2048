@@ -16,6 +16,7 @@ namespace pge {
 
     m_state(State{
       true,       // visible
+      true,       // enabled
       clickable,  // clickable
       selectable, // selectable
       false,      // highlighted

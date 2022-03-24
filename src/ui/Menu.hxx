@@ -30,6 +30,12 @@ namespace pge {
   }
 
   inline
+  void
+  Menu::setEnabled(bool enabled) noexcept {
+    m_state.enabled = enabled;
+  }
+
+  inline
   olc::vf2d
   Menu::getSize() const noexcept {
     return m_size;
@@ -88,7 +94,7 @@ namespace pge {
   inline
   bool
   Menu::onHighlight() const {
-    return true;
+    return m_state.enabled;
   }
 
   inline

@@ -117,6 +117,13 @@ namespace pge {
       void
       setSelectable(bool select) noexcept;
 
+      /**
+       * @brief - Used to turn this menu either active or inactive
+       *          based on the input boolean.
+       * @param enabled - `true` if the menu is enabled.
+       */
+      void
+      setEnabled(bool enabled) noexcept;
 
       /**
        * @brief- Interface method allowing to render a menu in
@@ -311,6 +318,9 @@ namespace pge {
       struct State {
         // Whether this menu is currently visible.
         bool visible;
+
+        // Whether this menu is currently enabled.
+        bool enabled;
 
         // Whether this menu is clickable: this triggeres whether a
         // hovering over action is associated with a change in color.

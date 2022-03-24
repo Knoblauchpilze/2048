@@ -14,7 +14,9 @@ namespace pge {
         true,  // disabled
         false, // terminated
       }
-    )
+    ),
+
+    m_menus()
   {
     setService("game");
   }
