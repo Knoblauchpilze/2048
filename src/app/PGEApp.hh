@@ -54,9 +54,7 @@ namespace pge {
 
     protected:
 
-      /**
-       * @brief - Convenience define refering to a drawing layer.
-       */
+      /// @brief - Convenience define refering to a drawing layer.
       enum class Layer {
         Draw,
         DrawDecal,
@@ -64,15 +62,36 @@ namespace pge {
         Debug
       };
 
-      /**
-       * @brief - Convenience structure defining the resources
-       *          that can be displayed in any app. It contains
-       *          pointers to the world's data, to the frames
-       *          allowing to change from screen coordinates to
-       *          world coordinates and the UI.
-       */
+      /// @brief - Convenience structure defining the resources
+      /// that can be displayed in any app. It contains pointers
+      /// to the world's data, to the frames allowing to change
+      /// from screen coordinates to world coordinates and the UI.
       struct RenderDesc {
+        // The coordinate frame to convert cells to pixels.
         CoordinateFrame& cf;
+
+        /**
+         * @brief - Convenience method allowing to determine if
+         *          an item is visible in the current viewport.
+         * @param p - the position to check in cells.
+         * @param r - the radius of the item.
+         * @return - `true` if the object is at least partially
+         *           visible.
+         */
+        bool
+        visible(const utils::Point2i& p, float r = 1.0f) const noexcept;
+
+        /**
+         * @brief - Similar method to the above but for floating
+         *          point position and a size instead of a radius
+         *          which allows for non square objects.
+         * @param p - the position to check in cells.
+         * @param sz - the size of the object.
+         * @return - `true` if the object is at least partially
+         *           visible.
+         */
+        bool
+        visible(const olc::vf2d& p, const olc::vf2d sz = olc::vf2d(1.0f, 1.0f)) const noexcept;
       };
 
       /**
@@ -233,15 +252,16 @@ namespace pge {
 
     private:
 
-      /**
-       * @brief - Used to keep track of the changes in the input
-       *          that were processed during a frame. It helps
-       *          determining whether some unique processes need
-       *          to be triggered, such as cleaning of rendering
-       *          layers that will not be updated anymore.
-       */
+      /// @brief - Used to keep track of the changes in the input
+      /// that were processed during a frame. It helps determining
+      /// whether some unique processes need to be triggered, such
+      /// as cleaning of rendering layers that will not be updated
+      /// anymore.
       struct InputChanges {
+        // A request to exit the program has been received.
         bool quit;
+
+        // Whether the debug layer should be visible.
         bool debugLayerToggled;
       };
 

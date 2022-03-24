@@ -63,24 +63,29 @@ namespace pge {
 
     private:
 
-      /**
-       * @brief - Convenience structure regrouping needed props
-       *          to draw a sprite.
-       */
+      /// @brief - Convenience structure regrouping needed props to
+      /// draw a sprite.
       struct SpriteDesc {
+        // The x coordinate of the sprite.
         float x;
+
+        // The y coordinate of the sprite.
         float y;
 
+        // The radius of the sprite: applied both along the x and y
+        // coordinates.
         float radius;
+
+        // The relative position of the sprite compared to its
+        // position.
         RelativePosition loc;
 
+        // A description of the sprite.
         sprites::Sprite sprite;
       };
 
-      /**
-       * @brief - Describe a possible orientation for a graphic
-       *          component (e.g. a healthbar, etc.).
-       */
+      /// @brief - Describe a possible orientation for a graphic component
+      /// (e.g. a healthbar, etc.).
       enum class Orientation {
         Horizontal,
         Vertical

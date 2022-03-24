@@ -129,12 +129,10 @@ namespace pge {
 
     private:
 
-      /**
-       * @brief - Convenience information defining the state of the
-       *          game. It includes information about whether the
-       *          menus should be displayed and if the user actions
-       *          should be interpreted or not.
-       */
+      /// @brief - Convenience information defining the state of the
+      /// game. It includes information about whether the menus should
+      /// be displayed and if the user actions should be interpreted
+      /// or not.
       struct State {
         // Defines whether this world is paused (i.e.
         // internal attributes of the mobs/blocks/etc
@@ -154,10 +152,21 @@ namespace pge {
         bool terminated;
       };
 
+      /// @brief - Convenience structure allowing to regroup
+      /// all info about the menu in a single struct.
+      struct Menus {
+      };
+
       /**
        * @brief - The definition of the game state.
        */
       State m_state;
+
+      /**
+       * @brief - The menus displaying information about the
+       *          current state of the simulation.
+       */
+      Menus m_menus;
   };
 
   using GameShPtr = std::shared_ptr<Game>;

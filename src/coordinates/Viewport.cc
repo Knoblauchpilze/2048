@@ -55,4 +55,25 @@ namespace pge {
     return true;
   }
 
+  bool
+  Viewport::visible(const olc::vf2d& p, const olc::vf2d& sz) const noexcept {
+    // Update bounds for the viewport if needed.
+    if (m_dirty) {
+      m_max = m_tl + m_dims;
+      m_dirty = false;
+    }
+
+    // If the element is fully out of the x span
+    // or out of the y span, then it is not visible.
+    if (p.x + sz.x < m_tl.x || p.x - sz.x > m_max.x) {
+      return false;
+    }
+
+    if (p.y + sz.y < m_tl.y || p.y - sz.y > m_max.y) {
+      return false;
+    }
+
+    return true;
+  }
+
 }

@@ -7,6 +7,18 @@ namespace pge {
 
   inline
   bool
+  PGEApp::RenderDesc::visible(const utils::Point2i& p, float r) const noexcept {
+    return cf.cellsViewport().visible(p, r);
+  }
+
+  inline
+  bool
+  PGEApp::RenderDesc::visible(const olc::vf2d& p, const olc::vf2d sz) const noexcept {
+    return cf.cellsViewport().visible(p, sz);
+  }
+
+  inline
+  bool
   PGEApp::OnUserDestroy() {
     cleanResources();
     cleanMenuResources();

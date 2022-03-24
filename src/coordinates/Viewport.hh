@@ -49,15 +49,28 @@ namespace pge {
       dims() const noexcept;
 
       /**
-       * @brief - Whether or not a position with the
-       *          specified radius is visible based
-       *          on the viewport dimensions.
-       * @param p - the position.
+       * @brief - Whether or not a position with the specified
+       *          radius is at least partially visible based on
+       *          the viewport dimensions.
+       * @param p - the position to check.
        * @param radius - the radius of the element.
-       * @return - `true` if the element is visible.
+       * @return - `true` if the element is at least partially
+       *            visible.
        */
       bool
       visible(const utils::Point2i& p, float radius) const noexcept;
+
+      /**
+       * @brief - Similar method to the above but handles position
+       *          as a floating point position and the radius as a
+       *          rectangular-ish shape.
+       * @param p - the position to check.
+       * @param sz - the dimensions of the element.
+       * @return - `true` if the element is at least partially
+       *            visible.
+       */
+      bool
+      visible(const olc::vf2d& p, const olc::vf2d& sz) const noexcept;
 
     private:
 
