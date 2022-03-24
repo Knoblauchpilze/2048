@@ -23,4 +23,14 @@ namespace two48 {
     m_board.initialize();
   }
 
+  unsigned
+  Game::moveHorizontally(bool positive) {
+    return m_board.moveHorizontally(positive);
+  }
+
+  unsigned
+  Game::moveVertically(bool positive) {
+    return m_board.moveVertically(positive);
+  }
+
 }

@@ -53,6 +53,26 @@ namespace two48 {
       unsigned
       at(int x, int y) const;
 
+      /**
+       * @brief - Move the pieces in the board with a horizontal move
+       *          which along the positive or negative axis based on
+       *          the value of the input boolean.
+       * @param positive - whether the move is towards positive x.
+       * @return - the number of points brought by the move.
+       */
+      unsigned
+      moveHorizontally(bool positive);
+
+      /**
+       * @brief - Move the pieces in the board with a vertical move
+       *          which along the positive or negative axis based on
+       *          the value of the input boolean.
+       * @param positive - whether the move is towards positive y.
+       * @return - the number of points brought by the move.
+       */
+      unsigned
+      moveVertically(bool positive);
+
     private:
 
       unsigned

@@ -31,6 +31,7 @@ main(int /*argc*/, char** /*argv*/) {
       olc::vi2d(64, 64)
     );
     pge::AppDesc ad = pge::newDesc(olc::vi2d(768, 768), cf, "2048");
+    ad.fixedFrame = true;
     pge::App demo(ad);
 
     demo.Start();

@@ -1,6 +1,7 @@
 #ifndef    APP_HH
 # define   APP_HH
 
+# include <vector>
 # include "PGEApp.hh"
 # include "TexturePack.hh"
 # include "Menu.hh"
@@ -125,6 +126,16 @@ namespace pge {
 
     private:
 
+      /// @brief - Convenience enumeration to refer to the directions.
+      enum Direction {
+        Right,
+        Up,
+        Left,
+        Down,
+
+        Count
+      };
+
       /**
        * @brief - The game managed by this application.
        */
@@ -148,6 +159,11 @@ namespace pge {
        *          the elements of the game.
        */
       TexturePackShPtr m_packs;
+
+      /**
+       * @brief - The state of each of the directional keys.
+       */
+      std::vector<bool> m_directionalState;
 
       /**
        * @brief - The 2048 board.

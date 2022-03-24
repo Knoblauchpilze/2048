@@ -65,6 +65,7 @@ namespace pge {
 
     m_packs(std::make_shared<TexturePack>()),
 
+    m_directionalState(Direction::Count, false),
     m_board(std::make_shared<two48::Game>(8, 8))
   {}
 
@@ -118,6 +119,23 @@ namespace pge {
       m_game->performAction(tp.x + it.x, tp.y + it.y);
     }
 
+    if (!c.keys[controls::keys::Right] && m_directionalState[Direction::Right]) {
+      m_game->move(1, 0);
+    }
+    if (!c.keys[controls::keys::Up] && m_directionalState[Direction::Up]) {
+      m_game->move(0, 1);
+    }
+    if (!c.keys[controls::keys::Left] && m_directionalState[Direction::Left]) {
+      m_game->move(-1, 0);
+    }
+    if (!c.keys[controls::keys::Down] && m_directionalState[Direction::Down]) {
+      m_game->move(0, -1);
+    }
+    m_directionalState[Direction::Right] = c.keys[controls::keys::Right];
+    m_directionalState[Direction::Up] = c.keys[controls::keys::Up];
+    m_directionalState[Direction::Left] = c.keys[controls::keys::Left];
+    m_directionalState[Direction::Down] = c.keys[controls::keys::Down];
+
     if (c.keys[controls::keys::P]) {
       m_game->togglePause();
     }
@@ -127,6 +145,9 @@ namespace pge {
   App::loadData() {
     // Create the game and its state.
     m_game = std::make_shared<Game>(m_board);
+
+    // Automatically set the game to not paused.
+    m_game->togglePause();
   }
 
   void

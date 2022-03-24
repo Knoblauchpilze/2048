@@ -71,6 +71,18 @@ namespace two48 {
     return m_board[linear(x, y)];
   }
 
+  unsigned
+  Board::moveHorizontally(bool positive) {
+    warn(std::string("Moving towards ") + (positive ? "right" : "left"));
+    return 0u;
+  }
+
+  unsigned
+  Board::moveVertically(bool positive) {
+    warn(std::string("Moving towards ") + (positive ? "up" : "down"));
+    return 0u;
+  }
+
   inline
   unsigned
   Board::linear(int x, int y) const noexcept {
