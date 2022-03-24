@@ -25,7 +25,16 @@ namespace two48 {
 
   unsigned
   Game::moveHorizontally(bool positive) {
-    return m_board.moveHorizontally(positive);
+    // Handle the move.
+    unsigned s = m_board.moveHorizontally(positive);
+
+    // Spawn a random tile: the value is set between
+    // 2 and 4 with a strong bias towards 2.
+    unsigned v = std::rand() % 100u < 90u ? 2u : 4u;
+
+    m_board.spawn(v);
+
+    return s;
   }
 
   unsigned

@@ -9,37 +9,37 @@ namespace {
 
   olc::Pixel
   backgroundFromNumber(unsigned number) noexcept {
-    if (number < 2u) {
+    if (number <= 2u) {
       return olc::Pixel(238, 228, 218);
     }
-    else if (number < 4u) {
+    else if (number <= 4u) {
       return olc::Pixel(236, 224, 200);
     }
-    else if (number < 8u) {
+    else if (number <= 8u) {
       return olc::Pixel(238, 177, 123);
     }
-    else if (number < 16u) {
+    else if (number <= 16u) {
       return olc::Pixel(242, 150, 105);
     }
-    else if (number < 32u) {
+    else if (number <= 32u) {
       return olc::Pixel(240, 125, 98);
     }
-    else if (number < 64) {
+    else if (number <= 64u) {
       return olc::Pixel(243, 95, 65);
     }
-    else if (number < 128) {
+    else if (number <= 128u) {
       return olc::Pixel(233, 206, 119);
     }
-    else if (number < 256) {
+    else if (number <= 256u) {
       return olc::Pixel(236, 203, 103);
     }
-    else if (number < 512) {
+    else if (number <= 512u) {
       return olc::Pixel(236, 200, 89);
     }
-    else if (number < 1024) {
+    else if (number <= 1024u) {
       return olc::Pixel(231, 194, 87);
     }
-    else if (number < 2048) {
+    else if (number <= 2048u) {
       return olc::Pixel(232, 189, 77);
     }
     else {
