@@ -148,11 +148,6 @@ namespace pge {
     m_directionalState[Direction::Left] = c.keys[controls::keys::Left];
     m_directionalState[Direction::Down] = c.keys[controls::keys::Down];
 
-    if (c.keys[controls::keys::P]) {
-      if (m_state->getScreen() == Screen::Game) {
-        m_game->togglePause();
-      }
-    }
     if (c.keys[controls::keys::N] || c.keys[controls::keys::R]) {
       if (m_state->getScreen() == Screen::Game) {
         m_game->reset();
@@ -189,7 +184,7 @@ namespace pge {
     // Generate the game state.
     m_state = std::make_shared<GameState>(
       olc::vi2d(ScreenWidth(), ScreenHeight()),
-      Screen::Game
+      Screen::Home
     );
 
     m_menus = m_game->generateMenus(ScreenWidth(), ScreenHeight());
