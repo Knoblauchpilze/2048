@@ -90,6 +90,13 @@ namespace two48 {
       moveVertically(bool positive,
                      bool& valid);
 
+      /**
+       * @brief - Whether the board still have valid moves.
+       * @return - `true` if a move is still possible.
+       */
+      bool
+      canMove() const noexcept;
+
     private:
 
       /**

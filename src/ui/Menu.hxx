@@ -12,6 +12,12 @@ namespace pge {
   }
 
   inline
+  bool
+  Menu::visible() const noexcept {
+    return m_state.visible;
+  }
+
+  inline
   void
   Menu::setVisible(bool visible) noexcept {
     m_state.visible = visible;
@@ -33,6 +39,12 @@ namespace pge {
   void
   Menu::setEnabled(bool enabled) noexcept {
     m_state.enabled = enabled;
+  }
+
+  inline
+  olc::Pixel
+  Menu::getBackgroundColor() const noexcept {
+    return m_bg.color;
   }
 
   inline

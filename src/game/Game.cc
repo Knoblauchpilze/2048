@@ -3,14 +3,16 @@
 # include <cxxabi.h>
 # include "Menu.hh"
 
+# include <iostream>
+
 /// @brief - The height of the main menu.
 # define STATUS_MENU_HEIGHT 50
 
 /// @brief - The width of the board in cells.
-# define BOARD_WIDTH 3
+# define BOARD_WIDTH 2
 
 /// @brief - The height of the board in cells.
-# define BOARD_HEIGHT 5
+# define BOARD_HEIGHT 2
 
 /// @brief - The undo stack depth.
 # define UNDO_STACK_DEPTH 5
@@ -49,6 +51,29 @@ namespace {
     );
   }
 
+  pge::MenuShPtr
+  generateMessageBoxMenu(const olc::vi2d& pos,
+                         const olc::vi2d& size,
+                         const std::string& text,
+                         const std::string& name,
+                         bool alert)
+  {
+    pge::menu::MenuContentDesc fd = pge::menu::newMenuContent(text, "", size);
+    fd.color = (alert ? olc::RED : olc::GREEN);
+    fd.align = pge::menu::Alignment::Center;
+
+    return std::make_shared<pge::Menu>(
+      pos,
+      size,
+      name,
+      pge::menu::newColoredBackground(alert ? olc::VERY_DARK_RED : olc::VERY_DARK_GREEN),
+      fd,
+      pge::menu::Layout::Horizontal,
+      false,
+      false
+    );
+  }
+
 }
 
 namespace pge {
@@ -70,7 +95,8 @@ namespace pge {
     m_height(BOARD_HEIGHT),
     m_board(std::make_shared<two48::Game>(m_width, m_height, UNDO_STACK_DEPTH)),
     m_moves(0u),
-    m_score(0u)
+    m_score(0u),
+    m_canMove(true)
   {
     setService("game");
   }
@@ -155,11 +181,27 @@ namespace pge {
       }
     );
 
+    // Generate the menu to indicate a loss.
+    m_menus.lost.date = utils::TimeStamp();
+    m_menus.lost.wasActive = false;
+    // We display the alert for 3 seconds.
+    m_menus.lost.duration = 3000;
+    m_menus.lost.menu = generateMessageBoxMenu(
+      olc::vi2d((width - 300.0f) / 2.0f, (height - 150.0f) / 2.0f),
+      olc::vi2d(300, 150),
+      "You lost !",
+      "lost",
+      true
+    );
+    m_menus.lost.menu->setVisible(false);
+
     // Package menus for output.
     std::vector<MenuShPtr> menus;
 
     menus.push_back(status);
     menus.push_back(mDims);
+
+    menus.push_back(m_menus.lost.menu);
 
     return menus;
   }
@@ -182,7 +224,13 @@ namespace pge {
 
     updateUI();
 
-    return true;
+    bool done = !m_canMove && !m_menus.lost.menu->visible();
+    if (done) {
+      pause();
+      enable(!m_state.paused);
+    }
+
+    return !done;
   }
 
   void
@@ -214,6 +262,12 @@ namespace pge {
       return;
     }
 
+    // Ignore any move if the user can't do antyhing anymore.
+    if (!m_canMove) {
+      log("Stop trying, you lost", utils::Level::Info);
+      return;
+    }
+
     unsigned score = 0u;
     bool valid = false;
 
@@ -242,6 +296,8 @@ namespace pge {
       return;
     }
 
+    m_canMove = m_board->canMove();
+
     // Update the moves and score.
     log("Move " + std::to_string(m_moves) + " brought " + std::to_string(score) + " point(s)", utils::Level::Verbose);
     ++m_moves;
@@ -262,17 +318,13 @@ namespace pge {
 
   void
   Game::reset() {
-    // Do nothing while the game is paused.
-    if (m_state.paused) {
-      return;
-    }
-
     log("Creating board with dimensions " + std::to_string(m_width) + "x" + std::to_string(m_height), utils::Level::Info);
 
     // Reset variables.
     m_moves = 0u;
     m_score = 0u;
     m_board = std::make_shared<two48::Game>(m_width, m_height);
+    m_canMove = true;
   }
 
   const two48::Board&
@@ -327,6 +379,48 @@ namespace pge {
     m_menus.wPlus->setEnabled(m_width < MAX_BOARD_WIDTH);
     m_menus.hMinus->setEnabled(m_height > 2u);
     m_menus.hPlus->setEnabled(m_height < MAX_BOARD_HEIGHT);
+
+    // Update the menu indicating that the user lost.
+    m_menus.lost.update(!m_canMove);
+  }
+
+  bool
+  Game::TimedMenu::update(bool active) noexcept {
+    // In case the menu should be active.
+    if (active) {
+      if (!wasActive) {
+        // Make it active if it's the first time that
+        // we detect that it should be active.
+        date = utils::now();
+        wasActive = true;
+        menu->setVisible(true);
+      }
+      else if (utils::now() > date + utils::toMilliseconds(duration)) {
+        // Deactivate the menu in case it's been active
+        // for too long.
+        menu->setVisible(false);
+      }
+      else {
+        // Update the alpha value in case it's active
+        // for not long enough.
+        olc::Pixel c = menu->getBackgroundColor();
+
+        float d = utils::diffInMs(date, utils::now()) / duration;
+        c.a = static_cast<uint8_t>(
+          std::clamp((1.0f - d) * pge::alpha::Opaque, 0.0f, 255.0f)
+        );
+        menu->setBackground(pge::menu::newColoredBackground(c));
+      }
+    }
+    // Or if the menu shouldn't be active anymore and
+    // it's the first time we detect that.
+    else if (wasActive) {
+      // Deactivate the menu.
+      menu->setVisible(false);
+      wasActive = false;
+    }
+
+    return menu->visible();
   }
 
 }

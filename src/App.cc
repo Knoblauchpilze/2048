@@ -89,7 +89,7 @@ namespace pge {
     }
 
     if (!m_game->step(fElapsed)) {
-      log("This is game over", utils::Level::Info);
+      m_state->setScreen(pge::Screen::GameOver);
     }
 
     return m_game->terminated();
@@ -149,10 +149,14 @@ namespace pge {
     m_directionalState[Direction::Down] = c.keys[controls::keys::Down];
 
     if (c.keys[controls::keys::P]) {
-      m_game->togglePause();
+      if (m_state->getScreen() == Screen::Game) {
+        m_game->togglePause();
+      }
     }
     if (c.keys[controls::keys::N] || c.keys[controls::keys::R]) {
-      m_game->reset();
+      if (m_state->getScreen() == Screen::Game) {
+        m_game->reset();
+      }
     }
   }
 
@@ -160,9 +164,6 @@ namespace pge {
   App::loadData() {
     // Create the game and its state.
     m_game = std::make_shared<Game>();
-
-    // Automatically set the game to not paused.
-    m_game->togglePause();
   }
 
   void
