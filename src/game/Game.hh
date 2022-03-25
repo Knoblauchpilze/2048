@@ -120,6 +120,12 @@ namespace pge {
       move(int x, int y);
 
       /**
+       * @brief - Undo the last move of the game if possible.
+       */
+      void
+      undo();
+
+      /**
        * @brief - Reset the game to a new one.
        */
       void
@@ -213,6 +219,9 @@ namespace pge {
 
         // The menu to increase the height of the board.
         MenuShPtr hPlus;
+
+        // The menu displaying the undo action.
+        MenuShPtr undo;
       };
 
       /**

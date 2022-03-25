@@ -4,13 +4,18 @@
 
 namespace two48 {
 
-  Board::Board(unsigned width, unsigned height) noexcept:
+  Board::Board(unsigned width,
+               unsigned height,
+               unsigned depth) noexcept:
     utils::CoreObject("board"),
 
     m_width(width),
     m_height(height),
 
-    m_board(w() * h(), 0u)
+    m_board(w() * h(), 0u),
+
+    m_undoStackDepth(depth),
+    m_undoStack()
   {
     setService("2048");
   }
@@ -51,6 +56,9 @@ namespace two48 {
 
   unsigned
   Board::moveHorizontally(bool positive) {
+    // Save the current state of the board.
+    saveBoard();
+
     // Move each row horizontally and accumulate the score.
     unsigned score = 0u;
 
@@ -63,6 +71,9 @@ namespace two48 {
 
   unsigned
   Board::moveVertically(bool positive) {
+    // Save the current state of the board.
+    saveBoard();
+
     // Move each column horizontally and accumulate the score.
     unsigned score = 0u;
 
@@ -76,6 +87,7 @@ namespace two48 {
   void
   Board::reset() noexcept {
     m_board = std::vector<unsigned>(w() * h(), 0u);
+    m_undoStack.clear();
   }
 
   bool
@@ -100,6 +112,25 @@ namespace two48 {
     log("Spawning " + std::to_string(value) + " at " + std::to_string(id % w()) + "x" + std::to_string(id / w()), utils::Level::Verbose);
 
     return true;
+  }
+
+  void
+  Board::undo() noexcept {
+    // In case there is no move to undo, stop here.
+    if (m_undoStack.empty()) {
+      log("Can't undo move, stack is empty");
+      return;
+    }
+
+    log("Restoring move, still " + std::to_string(m_undoStack.size()) + " available", utils::Level::Info);
+
+    m_board = m_undoStack.back();
+    m_undoStack.pop_back();
+  }
+
+  bool
+  Board::canUndo() const noexcept {
+    return !m_undoStack.empty();
   }
 
   inline
@@ -244,6 +275,21 @@ namespace two48 {
     }
 
     return score;
+  }
+
+  inline
+  void
+  Board::saveBoard() noexcept {
+    // Push the current state of the board: in case we
+    // already reached the maximum depth of the undo
+    // stack, we have to remove the first one.
+    if (m_undoStack.size() == m_undoStackDepth) {
+      log("Removing first saved move");
+      m_undoStack.pop_front();
+    }
+
+    log("Saving state " + std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth));
+    m_undoStack.push_back(m_board);
   }
 
 }

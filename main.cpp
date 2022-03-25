@@ -17,7 +17,6 @@
 /// TODO: Win screen.
 /// TODO: Losing screen.
 /// TODO: Load/save game.
-/// TODO: Undo ?
 
 int
 main(int /*argc*/, char** /*argv*/) {

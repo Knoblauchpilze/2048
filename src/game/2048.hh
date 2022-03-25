@@ -12,7 +12,15 @@ namespace two48 {
   class Game: public utils::CoreObject {
     public:
 
-      Game(unsigned width = 4u, unsigned height = 4u) noexcept;
+      /**
+       * @brief - Create a new game with the specified properties.
+       * @param width - the width of the board.
+       * @param height - the height of the board.
+       * @param depth - the undo stack depth.
+       */
+      Game(unsigned width = 4u,
+           unsigned height = 4u,
+           unsigned depth = 5u) noexcept;
 
       /**
        * @brief - The width of the board attached to this game.
@@ -40,6 +48,19 @@ namespace two48 {
        */
       void
       initialize() noexcept;
+
+      /**
+       * @brief - Undo the last move if possible.
+       */
+      void
+      undo();
+
+      /**
+       * @brief - Whether or not there are some moves to undo.
+       * @return - `true` if there are moves to be undone.
+       */
+      bool
+      canUndo() const noexcept;
 
       /**
        * @brief - Move the pieces in the board with a horizontal move
