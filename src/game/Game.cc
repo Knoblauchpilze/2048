@@ -9,10 +9,10 @@
 # define STATUS_MENU_HEIGHT 50
 
 /// @brief - The width of the board in cells.
-# define BOARD_WIDTH 2
+# define BOARD_WIDTH 4
 
 /// @brief - The height of the board in cells.
-# define BOARD_HEIGHT 2
+# define BOARD_HEIGHT 4
 
 /// @brief - The undo stack depth.
 # define UNDO_STACK_DEPTH 5

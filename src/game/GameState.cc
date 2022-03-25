@@ -71,7 +71,7 @@ namespace pge {
 
     m_home(nullptr),
     m_loadGame(nullptr),
-    m_savedGames(10u, "data/saves", "ext"),
+    m_savedGames(10u, "data/saves", "2048"),
     m_gameOver(nullptr)
   {
     setService("chess");

@@ -12,8 +12,6 @@
 # include "TopViewFrame.hh"
 # include "App.hh"
 
-/// TODO: Refine README.
-/// TODO: Win screen.
 /// TODO: Load/save game.
 
 int
