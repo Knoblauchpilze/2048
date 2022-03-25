@@ -56,6 +56,24 @@ namespace two48 {
       at(unsigned x, unsigned y) const;
 
       /**
+       * @brief - Check whether a horizontal move along the specified
+       *          direction is possible or not: this is defined when
+       *          at least a piece would move.
+       * @return - `true` if the move leads to at least one tile moving.
+       */
+      bool
+      canMoveHorizontally(bool positive) const noexcept;
+
+      /**
+       * @brief - Check whether a vertical move along the specified
+       *          direction is possible or not: this is defined when
+       *          at least a piece would move.
+       * @return - `true` if the move leads to at least one tile moving.
+       */
+      bool
+      canMoveVertically(bool positive) const noexcept;
+
+      /**
        * @brief - Move the pieces in the board with a horizontal move
        *          which along the positive or negative axis based on
        *          the value of the input boolean.

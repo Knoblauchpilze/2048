@@ -59,7 +59,15 @@ namespace two48 {
   }
 
   unsigned
-  Game::moveHorizontally(bool positive) {
+  Game::moveHorizontally(bool positive,
+                         bool& valid)
+  {
+    // Check whether the move is valid.
+    valid = m_board.canMoveHorizontally(positive);
+    if (!valid) {
+      return 0u;
+    }
+
     // Handle the move.
     unsigned s = m_board.moveHorizontally(positive);
 
@@ -72,7 +80,15 @@ namespace two48 {
   }
 
   unsigned
-  Game::moveVertically(bool positive) {
+  Game::moveVertically(bool positive,
+                       bool& valid)
+  {
+    // Check whether the move is valid.
+    valid = m_board.canMoveVertically(positive);
+    if (!valid) {
+      return 0u;
+    }
+
     // Handle the move.
     unsigned s = m_board.moveVertically(positive);
 
