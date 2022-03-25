@@ -54,6 +54,94 @@ namespace two48 {
     return m_board[linear(x, y)];
   }
 
+  bool
+  Board::canMoveHorizontally(bool positive) const noexcept {
+    // We have to make sure that at least one tile can be
+    // moved to the corresponding direction or merged.
+    bool valid = false;
+
+    unsigned y = 0u;
+    while (y < h() && !valid) {
+      // Scan the line and check if:
+      // - there are two consecutive digits with the same
+      //   value.
+      // - there is a space on the right direction compared
+      //   to the sense of the move.
+      unsigned lastDigit = 0u;
+
+      unsigned x = 0u;
+      while (x < w() && !valid) {
+        unsigned id = (positive ? y * w() + w() - 1u - x : y * w() + x);
+
+        // Case of same consiecutive digits.
+        if (lastDigit != 0u && lastDigit == m_board[id]) {
+          valid = true;
+        }
+
+        // Case of an empty space after a central digit. Note
+        // that we need to make sure that it's not the first
+        // digit.
+        if (lastDigit == 0u && m_board[id] != 0u &&
+            ((positive && id % w() != w() - 1u) || (!positive && id % w() != 0u)))
+        {
+          valid = true;
+        }
+
+        lastDigit = m_board[id];
+
+        ++x;
+      }
+
+      ++y;
+    }
+
+    return valid;
+  }
+
+  bool
+  Board::canMoveVertically(bool positive) const noexcept {
+    // We have to make sure that at least one tile can be
+    // moved to the corresponding direction or merged.
+    bool valid = false;
+
+    unsigned x = 0u;
+    while (x < w() && !valid) {
+      // Scan the line and check if:
+      // - there are two consecutive digits with the same
+      //   value.
+      // - there is a space on the right direction compared
+      //   to the sense of the move.
+      unsigned lastDigit = 0u;
+
+      unsigned y = 0u;
+      while (y < h() && !valid) {
+        unsigned id = (positive ? y * w() + x : (h() - 1u - y) * w() + x);
+
+        // Case of same consiecutive digits.
+        if (lastDigit != 0u && lastDigit == m_board[id]) {
+          valid = true;
+        }
+
+        // Case of an empty space after a central digit. Note
+        // that we need to make sure that it's not the first
+        // digit.
+        if (lastDigit == 0u && m_board[id] != 0u &&
+            ((positive && id / w() != 0) || (!positive && id / w() != h() - 1u)))
+        {
+          valid = true;
+        }
+
+        lastDigit = m_board[id];
+
+        ++y;
+      }
+
+      ++x;
+    }
+
+    return valid;
+  }
+
   unsigned
   Board::moveHorizontally(bool positive) {
     // Save the current state of the board.
@@ -284,11 +372,11 @@ namespace two48 {
     // already reached the maximum depth of the undo
     // stack, we have to remove the first one.
     if (m_undoStack.size() == m_undoStackDepth) {
-      log("Removing first saved move");
+      log("Removing first saved move", utils::Level::Verbose);
       m_undoStack.pop_front();
     }
 
-    log("Saving state " + std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth));
+    log("Saving state " + std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth), utils::Level::Verbose);
     m_undoStack.push_back(m_board);
   }
 

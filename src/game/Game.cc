@@ -215,13 +215,31 @@ namespace pge {
     }
 
     unsigned score = 0u;
+    bool valid = false;
 
     if (x != 0) {
-      score = m_board->moveHorizontally(x > 0);
+      score = m_board->moveHorizontally(x > 0, valid);
     }
 
     if (y != 0) {
-      score = m_board->moveVertically(y > 0);
+      score = m_board->moveVertically(y > 0, valid);
+    }
+
+    // In case the move is not valid, do nothing.
+    if (!valid) {
+      std::string move = "to the right";
+      if (x < 0) {
+        move = "to the left";
+      }
+      else if (y > 0) {
+        move = "up";
+      }
+      else if (y < 0) {
+        move = "down";
+      }
+
+      log("Ignoring invalid move " + move);
+      return;
     }
 
     // Update the moves and score.

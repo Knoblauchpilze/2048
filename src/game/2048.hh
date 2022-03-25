@@ -67,20 +67,28 @@ namespace two48 {
        *          which along the positive or negative axis based on
        *          the value of the input boolean.
        * @param positive - whether the move is towards positive x.
+       * @param valid - output argument defining whether the move was
+       *                valid. If not then the score will be `0` and
+       *                the board won't be modified.
        * @return - the number of points brought by the move.
        */
       unsigned
-      moveHorizontally(bool positive);
+      moveHorizontally(bool positive,
+                       bool& valid);
 
       /**
        * @brief - Move the pieces in the board with a vertical move
        *          which along the positive or negative axis based on
        *          the value of the input boolean.
        * @param positive - whether the move is towards positive y.
+       * @param valid - output argument defining whether the move was
+       *                valid. If not then the score will be `0` and
+       *                the board won't be modified.
        * @return - the number of points brought by the move.
        */
       unsigned
-      moveVertically(bool positive);
+      moveVertically(bool positive,
+                     bool& valid);
 
     private:
 
