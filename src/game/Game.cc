@@ -6,6 +6,18 @@
 /// @brief - The height of the main menu.
 # define STATUS_MENU_HEIGHT 50
 
+/// @brief - The width of the board in cells.
+# define BOARD_WIDTH 3
+
+/// @brief - The height of the board in cells.
+# define BOARD_HEIGHT 5
+
+/// @brief - The maximum width of the baord.
+# define MAX_BOARD_WIDTH 8
+
+/// @brief - The maximum height of the board.
+# define MAX_BOARD_HEIGHT 8
+
 namespace {
 
   pge::MenuShPtr
@@ -38,7 +50,7 @@ namespace {
 
 namespace pge {
 
-  Game::Game(two48::GameShPtr board):
+  Game::Game():
     utils::CoreObject("game"),
 
     m_state(
@@ -51,7 +63,9 @@ namespace pge {
 
     m_menus(),
 
-    m_board(board),
+    m_width(BOARD_WIDTH),
+    m_height(BOARD_HEIGHT),
+    m_board(std::make_shared<two48::Game>(m_width, m_height)),
     m_moves(0u),
     m_score(0u)
   {
@@ -62,7 +76,7 @@ namespace pge {
 
   std::vector<MenuShPtr>
   Game::generateMenus(float width,
-                      float /*height*/)
+                      float height)
   {
     olc::Pixel bg(250, 248, 239);
     olc::Pixel buttonBG(185, 172, 159);
@@ -90,10 +104,52 @@ namespace pge {
     status->addMenu(m_menus.score);
     status->addMenu(reset);
 
+    // Generate the board dimensions menu.
+    MenuShPtr mDims = generateMenu(olc::vi2d(0, height - STATUS_MENU_HEIGHT), olc::vi2d(width, STATUS_MENU_HEIGHT), "", "dims", bg);
+
+    m_menus.wMinus = generateMenu(pos, dims, "-", "w_minus", buttonBG, true);
+    m_menus.width = generateMenu(pos, dims, "0", "width", buttonBG);
+    m_menus.wPlus = generateMenu(pos, dims, "+", "w_plus", buttonBG, true);
+
+    m_menus.hMinus = generateMenu(pos, dims, "-", "h_minus", buttonBG, true);
+    m_menus.height = generateMenu(pos, dims, "0", "height", buttonBG);
+    m_menus.hPlus = generateMenu(pos, dims, "+", "h_plus", buttonBG, true);
+
+    mDims->addMenu(m_menus.wMinus);
+    mDims->addMenu(m_menus.width);
+    mDims->addMenu(m_menus.wPlus);
+    mDims->addMenu(m_menus.hMinus);
+    mDims->addMenu(m_menus.height);
+    mDims->addMenu(m_menus.hPlus);
+
+    m_menus.wMinus->setSimpleAction(
+      [this](Game& g) {
+        unsigned w = (m_board->w() > 2u ? m_board->w() - 1u : m_board->w());
+        g.setBoardDimensions(w, m_board->h());
+      }
+    );
+    m_menus.wPlus->setSimpleAction(
+      [this](Game& g) {
+        g.setBoardDimensions(m_board->w() + 1u, m_board->h());
+      }
+    );
+    m_menus.hMinus->setSimpleAction(
+      [this](Game& g) {
+        unsigned h = (m_board->h() > 2u ? m_board->h() - 1u : m_board->h());
+        g.setBoardDimensions(m_board->w(), h);
+      }
+    );
+    m_menus.hPlus->setSimpleAction(
+      [this](Game& g) {
+        g.setBoardDimensions(m_board->w(), m_board->h() + 1u);
+      }
+    );
+
     // Package menus for output.
     std::vector<MenuShPtr> menus;
 
     menus.push_back(status);
+    menus.push_back(mDims);
 
     return menus;
   }
@@ -171,10 +227,35 @@ namespace pge {
       return;
     }
 
+    log("Creating board with dimensions " + std::to_string(m_width) + "x" + std::to_string(m_height), utils::Level::Info);
+
     // Reset variables.
     m_moves = 0u;
     m_score = 0u;
-    m_board->initialize();
+    m_board = std::make_shared<two48::Game>(m_width, m_height);
+  }
+
+  const two48::Board&
+  Game::board() const noexcept {
+    return (*m_board)();
+  }
+
+  void
+  Game::setBoardDimensions(unsigned w, unsigned h) {
+    // Do nothing while the game is paused.
+    if (m_state.paused) {
+      return;
+    }
+
+    // Ignore identical dimensions.
+    if (m_board->w() == w && m_board->h() == h) {
+      return;
+    }
+
+    m_width = w;
+    m_height = h;
+
+    reset();
   }
 
   void
@@ -194,6 +275,15 @@ namespace pge {
     // Update moves and score.
     m_menus.moves->setText(std::to_string(m_moves));
     m_menus.score->setText(std::to_string(m_score));
+
+    // Update board dimensions.
+    m_menus.width->setText(std::to_string(m_width));
+    m_menus.height->setText(std::to_string(m_height));
+
+    m_menus.wMinus->setEnabled(m_width > 2u);
+    m_menus.wPlus->setEnabled(m_width < MAX_BOARD_WIDTH);
+    m_menus.hMinus->setEnabled(m_height > 2u);
+    m_menus.hPlus->setEnabled(m_height < MAX_BOARD_HEIGHT);
   }
 
 }

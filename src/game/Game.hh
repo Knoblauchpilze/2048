@@ -18,9 +18,8 @@ namespace pge {
 
       /**
        * @brief - Create a new game with default parameters.
-       * @param board - the board managed by this game.
        */
-      Game(two48::GameShPtr board);
+      Game();
 
       ~Game();
 
@@ -126,6 +125,24 @@ namespace pge {
       void
       reset();
 
+      /**
+       * @brief - Returns the board attached to this game.
+       * @return - the board attached to this game.
+       */
+      const two48::Board&
+      board() const noexcept;
+
+      /**
+       * @brief - Used to update the dimensions of the board to
+       *          the specified value. If the dimensions are the
+       *          same nothing changes.
+       *          Otherwise, the game is reset.
+       * @param w - the new width of the board.
+       * @param h - the new height of the board.
+       */
+      void
+      setBoardDimensions(unsigned w, unsigned h);
+
     private:
 
       /**
@@ -178,6 +195,24 @@ namespace pge {
 
         // The menu holding the score.
         MenuShPtr score;
+
+        // The menu to reduce the width of the board.
+        MenuShPtr wMinus;
+
+        // The menu holding the width of the board.
+        MenuShPtr width;
+
+        // The menu to increase the height of the board.
+        MenuShPtr wPlus;
+
+        // The menu to reduce the height of the board.
+        MenuShPtr hMinus;
+
+        // The menu holding the height of the board.
+        MenuShPtr height;
+
+        // The menu to increase the height of the board.
+        MenuShPtr hPlus;
       };
 
       /**
@@ -190,6 +225,16 @@ namespace pge {
        *          current state of the simulation.
        */
       Menus m_menus;
+
+      /**
+       * @brief - The width of the board in cells.
+       */
+      unsigned m_width;
+
+      /**
+       * @brief - The height of the board in cells.
+       */
+      unsigned m_height;
 
       /**
        * @brief - The board managed by this game.

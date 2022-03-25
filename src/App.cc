@@ -5,12 +5,6 @@
 /// @brief - The border to have between cells.
 # define CELL_BORDER 0.1f
 
-/// @brief - The width of the board in cells.
-# define BOARD_WIDTH 3
-
-/// @brief - The height of the board in cells.
-# define BOARD_HEIGHT 5
-
 namespace {
 
   olc::Pixel
@@ -84,8 +78,7 @@ namespace pge {
 
     m_packs(std::make_shared<TexturePack>()),
 
-    m_directionalState(Direction::Count, false),
-    m_board(std::make_shared<two48::Game>(BOARD_WIDTH, BOARD_HEIGHT))
+    m_directionalState(Direction::Count, false)
   {}
 
   bool
@@ -166,7 +159,7 @@ namespace pge {
   void
   App::loadData() {
     // Create the game and its state.
-    m_game = std::make_shared<Game>(m_board);
+    m_game = std::make_shared<Game>();
 
     // Automatically set the game to not paused.
     m_game->togglePause();
@@ -225,7 +218,7 @@ namespace pge {
       return;
     }
 
-    const two48::Board& b = (*m_board)();
+    const two48::Board& b = m_game->board();
 
     SpriteDesc sd = {};
     sd.loc = pge::RelativePosition::Center;
@@ -324,7 +317,7 @@ namespace pge {
     // the tiles so that they occupy one tile.
     sd.radius = 1.0f - CELL_BORDER;
 
-    const two48::Board& b = (*m_board)();
+    const two48::Board& b = m_game->board();
 
     // Draw the board.
     for (unsigned y = 0u ; y < b.h() ; ++y) {
@@ -342,7 +335,7 @@ namespace pge {
 
   void
   App::drawNumbers(const RenderDesc& res) noexcept {
-    const two48::Board& b = (*m_board)();
+    const two48::Board& b = m_game->board();
 
     // The scale for the numbers.
     olc::vf2d scale(2.0f, 2.0f);
@@ -377,7 +370,7 @@ namespace pge {
     sd.loc = pge::RelativePosition::Center;
     sd.radius = 1.0f - CELL_BORDER;
 
-    const two48::Board& b = (*m_board)();
+    const two48::Board& b = m_game->board();
 
     // Draw the overlay in case the mouse is over
     // a cell with a piece.

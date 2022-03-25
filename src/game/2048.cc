@@ -13,6 +13,16 @@ namespace two48 {
     initialize();
   }
 
+  unsigned
+  Game::w() const noexcept {
+    return m_board.w();
+  }
+
+  unsigned
+  Game::h() const noexcept {
+    return m_board.h();
+  }
+
   const Board&
   Game::operator()() const noexcept {
     return m_board;

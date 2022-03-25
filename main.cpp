@@ -12,6 +12,13 @@
 # include "TopViewFrame.hh"
 # include "App.hh"
 
+/// TODO: Refine README.
+/// TODO: Check that move is actually possible.
+/// TODO: Win screen.
+/// TODO: Losing screen.
+/// TODO: Load/save game.
+/// TODO: Undo ?
+
 int
 main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
