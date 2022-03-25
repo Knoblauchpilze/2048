@@ -15,6 +15,20 @@ namespace two48 {
       Game(unsigned width = 4u, unsigned height = 4u) noexcept;
 
       /**
+       * @brief - The width of the board attached to this game.
+       * @return - the width in cells.
+       */
+      unsigned
+      w() const noexcept;
+
+      /**
+       * @brief - The height of the board attached to this game.
+       * @return - the height in cells.
+       */
+      unsigned
+      h() const noexcept;
+
+      /**
        * @brief - Decay the game into its board component.
        * @return - the board used by this 2048 game.
        */

@@ -164,11 +164,6 @@ namespace pge {
        * @brief - The state of each of the directional keys.
        */
       std::vector<bool> m_directionalState;
-
-      /**
-       * @brief - The 2048 board.
-       */
-      two48::GameShPtr m_board;
   };
 
 }
