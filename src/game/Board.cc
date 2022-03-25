@@ -1,6 +1,7 @@
 
 # include "Board.hh"
 # include <cmath>
+# include <fstream>
 
 namespace two48 {
 
@@ -219,6 +220,127 @@ namespace two48 {
   bool
   Board::canUndo() const noexcept {
     return !m_undoStack.empty();
+  }
+
+  void
+  Board::save(const std::string& file,
+              unsigned moves,
+              unsigned score) const
+  {
+    // Open the file and verify that it is valid.
+    std::ofstream out(file.c_str());
+    if (!out.good()) {
+      error(
+        "Failed to save board to \"" + file + "\"",
+        "Failed to open file"
+      );
+    }
+
+    unsigned buf, size = sizeof(unsigned);
+    const char* raw = reinterpret_cast<const char*>(&buf);
+
+    // Save the dimensions of the board.
+    buf = m_width;
+    out.write(raw, size);
+
+    buf = m_height;
+    out.write(raw, size);
+
+    // Save the number of moves and the score.
+    buf = moves;
+    out.write(raw, size);
+
+    buf = score;
+    out.write(raw, size);
+
+    // Save the content board.
+    for (unsigned id = 0u ; id < m_board.size() ; ++id) {
+      buf = m_board[id];
+      out.write(raw, size);
+    }
+
+    // Save the undo stack.
+    buf = m_undoStackDepth;
+    out.write(raw, size);
+
+    buf = m_undoStack.size();
+    out.write(raw, size);
+
+    for (unsigned id = 0u ; id < m_undoStack.size() ; ++id) {
+      const std::vector<unsigned>& state = m_undoStack[id];
+      for (unsigned c = 0u ; c < state.size() ; ++c) {
+        buf = state[c];
+        out.write(raw, size);
+      }
+    }
+
+    log(
+      "Saved content of board with dimensions " +
+      std::to_string(m_width) + "x" + std::to_string(m_height) +
+      " to \"" + file + "\"",
+      utils::Level::Info
+    );
+  }
+
+  void
+  Board::load(const std::string& file) {
+    // Open the file and verify that it is valid.
+    std::ifstream out(file.c_str());
+    if (!out.good()) {
+      error(
+        "Failed to load board to \"" + file + "\"",
+        "Failed to open file"
+      );
+    }
+
+    out.read(reinterpret_cast<char*>(&m_width), sizeof(unsigned));
+    out.read(reinterpret_cast<char*>(&m_height), sizeof(unsigned));
+
+    // Consistency check.
+    if (m_width == 0u || m_height == 0u) {
+      error(
+        "Failed to load board from file \"" + file + "\"",
+        "Invalid board of size " + std::to_string(m_width) + "x" +
+        std::to_string(m_height)
+      );
+    }
+
+    // Skip the number of moves and the score.
+    unsigned foo;
+    out.read(reinterpret_cast<char*>(&foo), sizeof(unsigned));
+    out.read(reinterpret_cast<char*>(&foo), sizeof(unsigned));
+
+    // Read the content of the board.
+    m_board = std::vector<unsigned>(m_width * m_height, 0u);
+
+    for (unsigned id = 0u ; id < m_board.size() ; ++id) {
+      out.read(reinterpret_cast<char*>(&m_board[id]), sizeof(unsigned));
+    }
+
+    // Read the undo stack.
+    out.read(reinterpret_cast<char*>(&m_undoStackDepth), sizeof(unsigned));
+
+    unsigned count = 0u;
+    out.read(reinterpret_cast<char*>(&count), sizeof(unsigned));
+
+    // Read the previous states of the board.
+    unsigned size = m_width * m_height;
+    for (unsigned id = 0u ; id < count ; ++id) {
+      std::vector<unsigned> state(size, 0u);
+
+      for (unsigned c = 0u ; c < size ; ++c) {
+        out.read(reinterpret_cast<char*>(&state[c]), sizeof(unsigned));
+      }
+
+      m_undoStack.push_back(state);
+    }
+
+    log(
+      "Loaded board with dimensions " + std::to_string(m_width) + "x" +
+      std::to_string(m_height) + " with undo stack of " +
+      std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth),
+      utils::Level::Info
+    );
   }
 
   inline

@@ -351,6 +351,40 @@ namespace pge {
   }
 
   void
+  Game::load(const std::string& file) {
+    // Load the board.
+    m_board->load(file);
+
+    // Update internal properties.
+    m_width = m_board->w();
+    m_height = m_board->h();
+
+    m_canMove = m_board->canMove();
+
+    // Read the score and move count from the file: this is
+    // written at the beginning of the file, after the header.
+    std::ifstream out(file.c_str());
+    if (!out.good()) {
+      error("Failed to load board from file \"" + file + "\"", "No such file");
+    }
+
+    // Read dimensions of the board.
+    unsigned buf;
+    out.read(reinterpret_cast<char*>(&buf), sizeof(unsigned));
+    out.read(reinterpret_cast<char*>(&buf), sizeof(unsigned));
+
+    // Read the number of moves and the score.
+    out.read(reinterpret_cast<char*>(&m_moves), sizeof(unsigned));
+    out.read(reinterpret_cast<char*>(&m_score), sizeof(unsigned));
+  }
+
+  void
+  Game::save(const std::string& file) const {
+    // Save the file including the number of moves and the score.
+    m_board->save(file, m_moves, m_score);
+  }
+
+  void
   Game::enable(bool enable) {
     m_state.disabled = !enable;
 

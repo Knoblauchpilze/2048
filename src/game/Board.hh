@@ -121,6 +121,29 @@ namespace two48 {
       bool
       canUndo() const noexcept;
 
+      /**
+       * @brief - Used to perform the saving of this board to the
+       *          provided file.
+       *          Note that to have a valid save we need to be
+       *          provided the current number of moves and score.
+       * @param file - the name of the file to save the board to.
+       * @param moves - the current number of moves.
+       * @param score - the current score.
+       */
+      void
+      save(const std::string& file,
+           unsigned moves,
+           unsigned score) const;
+
+      /**
+       * @brief - Loads the content of the board defined in the
+       *          input file and use it to replace the content
+       *          of this board.
+       * @param file - the file defining the board's data.
+       */
+      void
+      load(const std::string& file);
+
     private:
 
       unsigned

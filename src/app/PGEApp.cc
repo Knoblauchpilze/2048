@@ -205,6 +205,9 @@ namespace pge {
     b = GetKey(olc::R);
     m_controls.keys[controls::keys::R] = b.bReleased;
 
+    b = GetKey(olc::S);
+    m_controls.keys[controls::keys::S] = b.bReleased;
+
     b = GetKey(olc::TAB),
     m_controls.tab = b.bReleased;
 
