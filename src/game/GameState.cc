@@ -155,7 +155,8 @@ namespace pge {
     // Add each option to the screen.
     MenuShPtr m = generateScreenOption(dims, "New game", olc::VERY_DARK_PINK, "new_game", true);
     m->setSimpleAction(
-      [this](Game& /*g*/) {
+      [this](Game& g) {
+        g.togglePause();
         setScreen(Screen::Game);
       }
     );
@@ -209,7 +210,8 @@ namespace pge {
 
     MenuShPtr m = generateScreenOption(dims, "Back to main screen", olc::VERY_DARK_MAGENTA, "back_to_main", true);
     m->setSimpleAction(
-      [this](Game& /*g*/) {
+      [this](Game& g) {
+        g.reset();
         setScreen(Screen::Home);
       }
     );
@@ -217,7 +219,9 @@ namespace pge {
 
     m = generateScreenOption(dims, "Restart", olc::VERY_DARK_MAGENTA, "restart", true);
     m->setSimpleAction(
-      [this](Game& /*g*/) {
+      [this](Game& g) {
+        g.reset();
+        g.togglePause();
         setScreen(Screen::Game);
       }
     );

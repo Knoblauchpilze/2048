@@ -13,9 +13,7 @@
 # include "App.hh"
 
 /// TODO: Refine README.
-/// TODO: Check that move is actually possible.
 /// TODO: Win screen.
-/// TODO: Losing screen.
 /// TODO: Load/save game.
 
 int

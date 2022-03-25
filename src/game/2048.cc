@@ -100,4 +100,14 @@ namespace two48 {
     return s;
   }
 
+  bool
+  Game::canMove() const noexcept {
+    return
+      m_board.canMoveHorizontally(true) ||
+      m_board.canMoveHorizontally(false) ||
+      m_board.canMoveVertically(true) ||
+      m_board.canMoveVertically(false)
+    ;
+  }
+
 }

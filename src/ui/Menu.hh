@@ -86,6 +86,13 @@ namespace pge {
       ~Menu();
 
       /**
+       * @brief - Whether or not the menu is visible.
+       * @return - `true` if the menu is visible.
+       */
+      bool
+      visible() const noexcept;
+
+      /**
        * @brief - Used to define whether this menu is visible.
        *          Changes will only be applied in the next
        *          call to `render` and the display should be
@@ -124,6 +131,13 @@ namespace pge {
        */
       void
       setEnabled(bool enabled) noexcept;
+
+      /**
+       * @brief - Return the background color for this menu.
+       * @return - the background color.
+       */
+      olc::Pixel
+      getBackgroundColor() const noexcept;
 
       /**
        * @brief- Interface method allowing to render a menu in
