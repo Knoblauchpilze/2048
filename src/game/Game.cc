@@ -311,6 +311,9 @@ namespace pge {
       return;
     }
 
+    // NOTE: We're not updating the number of moves
+    // neither the score, which also gives room for
+    // a potential score exploit.
     log("Undoing last move", utils::Level::Info);
 
     m_board->undo();

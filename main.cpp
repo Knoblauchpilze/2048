@@ -12,8 +12,6 @@
 # include "TopViewFrame.hh"
 # include "App.hh"
 
-/// TODO: Load/save game.
-
 int
 main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
