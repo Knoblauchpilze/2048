@@ -3,6 +3,7 @@
 
 # include <vector>
 # include <memory>
+# include <deque>
 # include <core_utils/CoreObject.hh>
 
 namespace two48 {
@@ -10,8 +11,15 @@ namespace two48 {
   class Board: public utils::CoreObject {
     public:
 
-      explicit
-      Board(unsigned width = 4u, unsigned height = 4u) noexcept;
+      /**
+       * @brief - Create a new board with the specified dimensions.
+       * @param width - the width of the board.
+       * @param height - the height of the board.
+       * @param depth - the depth of the undo stack.
+       */
+      Board(unsigned width = 4u,
+            unsigned height = 4u,
+            unsigned depth = 5u) noexcept;
 
       /**
        * @brief - The width of the board.
@@ -82,6 +90,19 @@ namespace two48 {
       bool
       spawn(unsigned value) noexcept;
 
+      /**
+       * @brief - Undo the last move if possible.
+       */
+      void
+      undo() noexcept;
+
+      /**
+       * @brief - Whether or not there are some moves to undo.
+       * @return - `true` if there are moves to be undone.
+       */
+      bool
+      canUndo() const noexcept;
+
     private:
 
       unsigned
@@ -107,6 +128,13 @@ namespace two48 {
       unsigned
       collapseColumn(unsigned x, bool positive) noexcept;
 
+      /**
+       * @brief - Save the current state of the board and handle the
+       *          undo properties.
+       */
+      void
+      saveBoard() noexcept;
+
     private:
 
       /**
@@ -123,6 +151,16 @@ namespace two48 {
        * @brief - The current state of the board.
        */
       mutable std::vector<unsigned> m_board;
+
+      /**
+       * @brief - The depth of the undo stack.
+       */
+      unsigned m_undoStackDepth;
+
+      /**
+       * @brief - The list of the last moves which can be undone.
+       */
+      std::deque<std::vector<unsigned>> m_undoStack;
   };
 
   using BoardShPtr = std::shared_ptr<Board>;

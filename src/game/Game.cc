@@ -12,6 +12,9 @@
 /// @brief - The height of the board in cells.
 # define BOARD_HEIGHT 5
 
+/// @brief - The undo stack depth.
+# define UNDO_STACK_DEPTH 5
+
 /// @brief - The maximum width of the baord.
 # define MAX_BOARD_WIDTH 8
 
@@ -65,7 +68,7 @@ namespace pge {
 
     m_width(BOARD_WIDTH),
     m_height(BOARD_HEIGHT),
-    m_board(std::make_shared<two48::Game>(m_width, m_height)),
+    m_board(std::make_shared<two48::Game>(m_width, m_height, UNDO_STACK_DEPTH)),
     m_moves(0u),
     m_score(0u)
   {
@@ -90,8 +93,14 @@ namespace pge {
     m_menus.moves = generateMenu(pos, dims, "0", "moves", buttonBG);
     MenuShPtr sLabel = generateMenu(pos, dims, "Score:", "score_label", buttonBG);
     m_menus.score = generateMenu(pos, dims, "0", "score", buttonBG);
+    m_menus.undo = generateMenu(pos, dims, "Undo", "unro", buttonBG, true);
     MenuShPtr reset = generateMenu(pos, dims, "Reset", "reset", buttonBG, true);
 
+    m_menus.undo->setSimpleAction(
+      [](Game& g) {
+        g.undo();
+      }
+    );
     reset->setSimpleAction(
       [](Game& g) {
         g.reset();
@@ -102,6 +111,7 @@ namespace pge {
     status->addMenu(m_menus.moves);
     status->addMenu(sLabel);
     status->addMenu(m_menus.score);
+    status->addMenu(m_menus.undo);
     status->addMenu(reset);
 
     // Generate the board dimensions menu.
@@ -221,6 +231,18 @@ namespace pge {
   }
 
   void
+  Game::undo() {
+    // Do nothing while the game is paused.
+    if (m_state.paused) {
+      return;
+    }
+
+    log("Undoing last move", utils::Level::Info);
+
+    m_board->undo();
+  }
+
+  void
   Game::reset() {
     // Do nothing while the game is paused.
     if (m_state.paused) {
@@ -275,6 +297,9 @@ namespace pge {
     // Update moves and score.
     m_menus.moves->setText(std::to_string(m_moves));
     m_menus.score->setText(std::to_string(m_score));
+
+    // Update the undo button.
+    m_menus.undo->setEnabled(m_board->canUndo());
 
     // Update board dimensions.
     m_menus.width->setText(std::to_string(m_width));

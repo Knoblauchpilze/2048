@@ -3,10 +3,10 @@
 
 namespace two48 {
 
-  Game::Game(unsigned width, unsigned height) noexcept:
+  Game::Game(unsigned width, unsigned height, unsigned depth) noexcept:
     utils::CoreObject("board"),
 
-    m_board(width, height)
+    m_board(width, height, depth)
   {
     setService("2048");
 
@@ -43,6 +43,19 @@ namespace two48 {
 
       ++id;
     }
+  }
+
+  void
+  Game::undo() {
+    // NOTE: We introduce a bias: as we don't save the piece
+    // that was spawned, we leave the possibility to undo a
+    // move until a piece is what the user expects.
+    m_board.undo();
+  }
+
+  bool
+  Game::canUndo() const noexcept {
+    return m_board.canUndo();
   }
 
   unsigned
