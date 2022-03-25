@@ -153,6 +153,11 @@ namespace pge {
         m_game->reset();
       }
     }
+    if (c.keys[controls::keys::S]) {
+      if (m_state->getScreen() == Screen::Game) {
+        m_state->save();
+      }
+    }
   }
 
   void
@@ -184,7 +189,8 @@ namespace pge {
     // Generate the game state.
     m_state = std::make_shared<GameState>(
       olc::vi2d(ScreenWidth(), ScreenHeight()),
-      Screen::Home
+      Screen::Home,
+      *m_game
     );
 
     m_menus = m_game->generateMenus(ScreenWidth(), ScreenHeight());

@@ -82,5 +82,20 @@ Note that changing the size of the board will reset it.
 
 ## Serialization
 
-TODO: Handle the serialization documentation.
+The serialization is done through files with a `".2048"` extension. These files are binary and provide the content to use to generate the board as it was at the moment of the save.
 
+### Header section
+
+The first section defines the width and height of the board as a 4 bytes unsigned integer.
+
+### Game variables
+
+The next section is composed of two 4 bytes unsigned integers, defining the number of moves performed at the moment of the save and the score reached for this game.
+
+### The board
+
+The next section defines the board: we define it as 4 bytes unsigned values. The precise amount is computed as `width x height`.
+
+### Undo stack
+
+The final section defines a first 4 bytes unsigned integers representing how many undo moves are available and then the content of the board for each state (using a similar syntax to what is used for the board).

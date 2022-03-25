@@ -110,4 +110,17 @@ namespace two48 {
     ;
   }
 
+  void
+  Game::load(const std::string& file) {
+    m_board.load(file);
+  }
+
+  void
+  Game::save(const std::string& file,
+             unsigned moves,
+             unsigned score) const
+  {
+    m_board.save(file, moves, score);
+  }
+
 }
