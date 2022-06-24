@@ -3,8 +3,6 @@
 # include <cxxabi.h>
 # include "Menu.hh"
 
-# include <iostream>
-
 /// @brief - The height of the main menu.
 # define STATUS_MENU_HEIGHT 50
 
