@@ -102,7 +102,7 @@ namespace two48 {
       /**
        * @brief - Pop a tile with the input value at a random empty
        *          location in the grid.
-       * @param value - the valeu to spawn.
+       * @param value - the value to spawn.
        * @return - `true` in case the tile could be spawned.
        */
       bool
