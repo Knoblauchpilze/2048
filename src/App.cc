@@ -181,7 +181,7 @@ namespace pge {
     // for now to achieve it.
     setLayerTint(Layer::Draw, olc::Pixel(255, 255, 255, alpha::SemiOpaque));
 
-    log("Load app resources in the 'm_packs' attribute", utils::Level::Info);
+    info("Load app resources in the 'm_packs' attribute");
   }
 
   void

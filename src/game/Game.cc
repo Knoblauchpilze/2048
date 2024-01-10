@@ -208,7 +208,7 @@ namespace pge {
   Game::performAction(float /*x*/, float /*y*/) {
     // Only handle actions when the game is not disabled.
     if (m_state.disabled) {
-      log("Ignoring action while menu is disabled");
+      debug("Ignoring action while menu is disabled");
       return;
     }
   }
@@ -262,7 +262,7 @@ namespace pge {
 
     // Ignore any move if the user can't do antyhing anymore.
     if (!m_canMove) {
-      log("Stop trying, you lost", utils::Level::Info);
+      info("Stop trying, you lost");
       return;
     }
 
@@ -290,14 +290,14 @@ namespace pge {
         move = "down";
       }
 
-      log("Ignoring invalid move " + move);
+      debug("Ignoring invalid move " + move);
       return;
     }
 
     m_canMove = m_board->canMove();
 
     // Update the moves and score.
-    log("Move " + std::to_string(m_moves) + " brought " + std::to_string(score) + " point(s)", utils::Level::Verbose);
+    verbose("Move " + std::to_string(m_moves) + " brought " + std::to_string(score) + " point(s)");
     ++m_moves;
     m_score += score;
   }
@@ -312,14 +312,14 @@ namespace pge {
     // NOTE: We're not updating the number of moves
     // neither the score, which also gives room for
     // a potential score exploit.
-    log("Undoing last move", utils::Level::Info);
+    info("Undoing last move");
 
     m_board->undo();
   }
 
   void
   Game::reset() {
-    log("Creating board with dimensions " + std::to_string(m_width) + "x" + std::to_string(m_height), utils::Level::Info);
+    info("Creating board with dimensions " + std::to_string(m_width) + "x" + std::to_string(m_height));
 
     // Reset variables.
     m_moves = 0u;
@@ -390,10 +390,10 @@ namespace pge {
     m_state.disabled = !enable;
 
     if (m_state.disabled) {
-      log("Disabled game UI", utils::Level::Verbose);
+      verbose("Disabled game UI");
     }
     else {
-      log("Enabled game UI", utils::Level::Verbose);
+      verbose("Enabled game UI");
     }
   }
 

@@ -198,7 +198,7 @@ namespace two48 {
     unsigned id = availables[std::rand() % availables.size()];
     m_board[id] = value;
 
-    log("Spawning " + std::to_string(value) + " at " + std::to_string(id % w()) + "x" + std::to_string(id / w()), utils::Level::Verbose);
+    verbose("Spawning " + std::to_string(value) + " at " + std::to_string(id % w()) + "x" + std::to_string(id / w()));
 
     return true;
   }
@@ -207,11 +207,11 @@ namespace two48 {
   Board::undo() noexcept {
     // In case there is no move to undo, stop here.
     if (m_undoStack.empty()) {
-      log("Can't undo move, stack is empty");
+      debug("Can't undo move, stack is empty");
       return;
     }
 
-    log("Restoring move, still " + std::to_string(m_undoStack.size()) + " available", utils::Level::Info);
+    info("Restoring move, still " + std::to_string(m_undoStack.size()) + " available");
 
     m_board = m_undoStack.back();
     m_undoStack.pop_back();
@@ -274,11 +274,10 @@ namespace two48 {
       }
     }
 
-    log(
+    info(
       "Saved content of board with dimensions " +
       std::to_string(m_width) + "x" + std::to_string(m_height) +
-      " to \"" + file + "\"",
-      utils::Level::Info
+      " to \"" + file + "\""
     );
   }
 
@@ -335,11 +334,10 @@ namespace two48 {
       m_undoStack.push_back(state);
     }
 
-    log(
+    info(
       "Loaded board with dimensions " + std::to_string(m_width) + "x" +
       std::to_string(m_height) + " with undo stack of " +
-      std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth),
-      utils::Level::Info
+      std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth)
     );
   }
 
@@ -494,11 +492,11 @@ namespace two48 {
     // already reached the maximum depth of the undo
     // stack, we have to remove the first one.
     if (m_undoStack.size() == m_undoStackDepth) {
-      log("Removing first saved move", utils::Level::Verbose);
+      verbose("Removing first saved move");
       m_undoStack.pop_front();
     }
 
-    log("Saving state " + std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth), utils::Level::Verbose);
+    verbose("Saving state " + std::to_string(m_undoStack.size()) + "/" + std::to_string(m_undoStackDepth));
     m_undoStack.push_back(m_board);
   }
 
